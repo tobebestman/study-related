@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Comp 2015 Assingment 2</title>
+</head>
+
+<body> </body>
+<script>
+    var divImgMap = {
+        "a": "./images/bird.jpg"
+        , "b": "./images/cat.jpg"
+        , "c": "./images/dog.jpg"
+        , "d": "./images/fish.jpg"
+        , "e": "./images/turtle.jpg"
+    }
+    var outDivImgMap = {
+        "g": "./images/bird.jpg"
+    }
+    var outDivImgMap2 = {
+        "h": "./images/cat.jpg"
+    }
+    var clickCountMap = {
+        "a": "false"
+        , "b": "false"
+        , "c": "false"
+        , "d": "false"
+        , "e": "false"
+    }
+
+    function addImagesTo(containerElement, imgMap, onClickCallback) {
+        for (var key in imgMap) {
+            picElement = document.createElement('img');
+            picElement.setAttribute("id", key);
+            picElement.setAttribute("src", imgMap[key]);
+            picElement.setAttribute("width", "200px");
+            picElement.setAttribute("height", "auto");
+            if (onClickCallback != null) {
+                picElement.onclick = onClickCallback;
+            }
+            containerElement.appendChild(picElement);
+        }
+    }
+
+    function divImgClicked() {
+        let id = this.id;
+        alert(id);
+    }
+
+    function btnClicked() {
+        alert(this);
+    }
+
+    function addButton(bodyElement) {
+        let btnElement = document.createElement("input");
+        btnElement.setAttribute("type", "button");
+        btnElement.value = "Click Me!"
+        btnElement.onclick = btnClicked;
+        bodyElement.appendChild(btnElement);
+    }
+
+    function dblClickOnBody() {
+        let divElement = document.createElement('div');
+        divElement.style.border = "1px solid red";
+        this.appendChild(divElement);
+        addImagesTo(divElement, divImgMap, divImgClicked);
+        addButton(this);
+        this.appendChild(document.createElement("br"));
+        addImagesTo(this, outDivImgMap, divImgClicked);
+        this.appendChild(document.createElement("br"));
+        addImagesTo(this, outDivImgMap2, divImgClicked);
+    }
+    document.body.addEventListener('dblclick', dblClickOnBody);
+    //use the two line below to force the width and height of the body to 100% of the width and height. So that the dbl-click is more easy.
+    document.body.style.width = "100vw";
+    document.body.style.height = "100vh";
+</script>
+
+</html>
