@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Comp 2015 Assingment 2</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 </head>
 
 <body> </body>
@@ -33,15 +34,42 @@
         document.documentElement.clientWidth ||
         document.body.clientWidth;
 
-    function MovableImage(image, step, onClickCallback, onDblClickCallback) {
-        this.image = image;
-        this.step = step;
-        this.timer = null;
-    }
+    //Object to handling the last to movable images
+    function MovableImage(image, step) {
 
-    const step = 5;
-    var imageG = null;
-    var timerForG = null;
+        var timer = null;
+
+        var moveImage = function() {
+            if (image == null)
+                return;
+
+            let currentLeft = parseInt(image.style.left);
+            currentLeft += step;
+            if (currentLeft > maxWinWidth) {
+                currentLeft = 0;
+            }
+            image.style.left = currentLeft + "px";
+        }
+
+        var createTimerForImage = function() {
+            if (timer != null) {
+                window.clearInterval(timer);
+                timer = null;
+            } else {
+                timer = window.setInterval(moveImage, 100);
+            }
+        }
+
+        var imageOnclick = function clickOnImage() {
+            createTimerForImage();
+        }
+
+        image.ondblclick = function dblClickOnImage(event) {
+            createTimerForImage();
+            image.onclick = imageOnclick;
+            event.stopPropagation();
+        }
+    }
 
     function addImagesTo(containerElement, imgMap, onClickCallback, onDblClickCallback) {
         for (var key in imgMap) {
@@ -88,49 +116,10 @@
     }
 
     function btnClicked() {
-        alert(this);
-    }
-
-
-    function doClickOnImage() {
-        if (this.id == "g") {
-
-            if (timerForG != null) {
-                window.clearInterval(timerForG);
-                timerForG = null;
-            } else {
-                timerForG = window.setInterval(moveImageG, 100);
-            }
+        let imgs = $("img");
+        for (let img of imgs) {
+            img.style.border = "1px solid red";
         }
-    }
-
-
-
-    function moveImageG() {
-        if (imageG == null)
-            return;
-
-        let currentLeft = parseInt(imageG.style.left);
-        currentLeft += step;
-        if (currentLeft > maxWinWidth) {
-            currentLeft = 0;
-        }
-        imageG.style.left = currentLeft + "px";
-    }
-    var timerForH = null;
-
-    function dblClickOnImage(event) {
-        this.onclick = doClickOnImage;
-        if (this.id == "g") {
-            imageG = this;
-            if (timerForG == null) {
-                timerForG = window.setInterval(moveImageG, 100);
-            }
-
-        } else if (this.id = "h") {
-
-        }
-        event.stopPropagation();
     }
 
     function addButton(bodyElement) {
@@ -143,6 +132,8 @@
 
     const divName = "contener-div";
 
+    var movableImageG = null;
+    var movableImageH = null;
 
     function setupImagePosition(idValue, left, top) {
         let img = document.getElementById(idValue);
@@ -151,6 +142,7 @@
             img.style.left = left + "px";
             img.style.top = top + "px"
         }
+        return img;
     }
 
     function dblClickOnBody() {
@@ -164,18 +156,18 @@
 
         let divElement = document.createElement('div');
         divElement.setAttribute("id", divName);
-        divElement.style.border = "1px solid red";
         this.appendChild(divElement);
         addImagesTo(divElement, divImgMap, divImgClicked);
         addButton(this);
         this.appendChild(document.createElement("br"));
-        addImagesTo(this, outDivImgMap, null, dblClickOnImage);
+        addImagesTo(this, outDivImgMap);
         this.appendChild(document.createElement("br"));
-        addImagesTo(this, outDivImgMap2, null, dblClickOnImage);
+        addImagesTo(this, outDivImgMap2);
 
-        setupImagePosition("g", 0, 400);
-        setupImagePosition("h", 0, 600);
+        movableImageG = new MovableImage(setupImagePosition("g", 0, 400), 10);
+        movableImageH = new MovableImage(setupImagePosition("h", 0, 600), 20);
     }
+
     document.body.addEventListener('dblclick', dblClickOnBody);
     //use the two line below to force the width and height of the body to 100% of the width and height. So that the dbl-click is more easy.
     document.body.style.width = "100vw";
