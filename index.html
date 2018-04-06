@@ -28,6 +28,11 @@
         , "d": "false"
         , "e": "false"
     }
+    var movableButtonData = {
+        "element": null
+        , "controlTimer": null
+        , "step": 0
+    }
 
     function addImagesTo(containerElement, imgMap, onClickCallback) {
         for (var key in imgMap) {
@@ -45,7 +50,26 @@
 
     function divImgClicked() {
         let id = this.id;
-        alert(id);
+        if (clickCountMap[id] == true) {
+            alert("Already clicked, will not move again");
+            return;
+        }
+        clickCountMap[id] = true;
+        let divNode = document.getElementsByTagName("div")[0];
+        let nodes = new Array;
+        nodes.push(this);
+        let loc = -1;
+        for (let i = 0; i < divNode.children.length; ++i) {
+            if (divNode.children[i].id != id) {
+                nodes.push(divNode.children[i]);
+            }
+        }
+        while (divNode.children.length > 0) {
+            divNode.removeChild(divNode.firstChild);
+        }
+        for (let i = 0; i < nodes.length; ++i) {
+            divNode.appendChild(nodes[i]);
+        }
     }
 
     function btnClicked() {
@@ -67,9 +91,9 @@
         addImagesTo(divElement, divImgMap, divImgClicked);
         addButton(this);
         this.appendChild(document.createElement("br"));
-        addImagesTo(this, outDivImgMap, divImgClicked);
+        addImagesTo(this, outDivImgMap);
         this.appendChild(document.createElement("br"));
-        addImagesTo(this, outDivImgMap2, divImgClicked);
+        addImagesTo(this, outDivImgMap2);
     }
     document.body.addEventListener('dblclick', dblClickOnBody);
     //use the two line below to force the width and height of the body to 100% of the width and height. So that the dbl-click is more easy.
