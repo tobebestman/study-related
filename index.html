@@ -9,11 +9,11 @@
 <body> </body>
 <script>
     var divImgMap = {
-        "a": "./images/bird.jpg"
-        , "b": "./images/cat.jpg"
-        , "c": "./images/dog.jpg"
-        , "d": "./images/fish.jpg"
-        , "e": "./images/turtle.jpg"
+        "a": "./images/bird.jpg",
+        "b": "./images/cat.jpg",
+        "c": "./images/dog.jpg",
+        "d": "./images/fish.jpg",
+        "e": "./images/turtle.jpg"
     }
     var outDivImgMap = {
         "g": "./images/bird.jpg"
@@ -22,28 +22,43 @@
         "h": "./images/cat.jpg"
     }
     var clickCountMap = {
-        "a": "false"
-        , "b": "false"
-        , "c": "false"
-        , "d": "false"
-        , "e": "false"
-    }
-    var movableButtonData = {
-        "element": null
-        , "controlTimer": null
-        , "step": 0
+        "a": "false",
+        "b": "false",
+        "c": "false",
+        "d": "false",
+        "e": "false"
     }
 
-    function addImagesTo(containerElement, imgMap, onClickCallback) {
+    const maxWinWidth = window.innerWidth ||
+        document.documentElement.clientWidth ||
+        document.body.clientWidth;
+
+    function MovableImage(image, step, onClickCallback, onDblClickCallback) {
+        this.image = image;
+        this.step = step;
+        this.timer = null;
+    }
+
+    const step = 5;
+    var imageG = null;
+    var timerForG = null;
+
+    function addImagesTo(containerElement, imgMap, onClickCallback, onDblClickCallback) {
         for (var key in imgMap) {
             picElement = document.createElement('img');
             picElement.setAttribute("id", key);
             picElement.setAttribute("src", imgMap[key]);
             picElement.setAttribute("width", "200px");
             picElement.setAttribute("height", "auto");
+            picElement.setAttribute("position", "absolute");
             if (onClickCallback != null) {
                 picElement.onclick = onClickCallback;
             }
+
+            if (onDblClickCallback != null) {
+                picElement.ondblclick = onDblClickCallback;
+            }
+
             containerElement.appendChild(picElement);
         }
     }
@@ -76,6 +91,48 @@
         alert(this);
     }
 
+
+    function doClickOnImage() {
+        if (this.id == "g") {
+
+            if (timerForG != null) {
+                window.clearInterval(timerForG);
+                timerForG = null;
+            } else {
+                timerForG = window.setInterval(moveImageG, 100);
+            }
+        }
+    }
+
+
+
+    function moveImageG() {
+        if (imageG == null)
+            return;
+
+        let currentLeft = parseInt(imageG.style.left);
+        currentLeft += step;
+        if (currentLeft > maxWinWidth) {
+            currentLeft = 0;
+        }
+        imageG.style.left = currentLeft + "px";
+    }
+    var timerForH = null;
+
+    function dblClickOnImage(event) {
+        this.onclick = doClickOnImage;
+        if (this.id == "g") {
+            imageG = this;
+            if (timerForG == null) {
+                timerForG = window.setInterval(moveImageG, 100);
+            }
+
+        } else if (this.id = "h") {
+
+        }
+        event.stopPropagation();
+    }
+
     function addButton(bodyElement) {
         let btnElement = document.createElement("input");
         btnElement.setAttribute("type", "button");
@@ -84,16 +141,40 @@
         bodyElement.appendChild(btnElement);
     }
 
+    const divName = "contener-div";
+
+
+    function setupImagePosition(idValue, left, top) {
+        let img = document.getElementById(idValue);
+        if (img) {
+            img.style.position = "absolute";
+            img.style.left = left + "px";
+            img.style.top = top + "px"
+        }
+    }
+
     function dblClickOnBody() {
+
+        let divObj = document.getElementById(divName);
+
+        if (divObj != null) {
+            alert("div already created, do nothing.");
+            return;
+        }
+
         let divElement = document.createElement('div');
+        divElement.setAttribute("id", divName);
         divElement.style.border = "1px solid red";
         this.appendChild(divElement);
         addImagesTo(divElement, divImgMap, divImgClicked);
         addButton(this);
         this.appendChild(document.createElement("br"));
-        addImagesTo(this, outDivImgMap);
+        addImagesTo(this, outDivImgMap, null, dblClickOnImage);
         this.appendChild(document.createElement("br"));
-        addImagesTo(this, outDivImgMap2);
+        addImagesTo(this, outDivImgMap2, null, dblClickOnImage);
+
+        setupImagePosition("g", 0, 400);
+        setupImagePosition("h", 0, 600);
     }
     document.body.addEventListener('dblclick', dblClickOnBody);
     //use the two line below to force the width and height of the body to 100% of the width and height. So that the dbl-click is more easy.
