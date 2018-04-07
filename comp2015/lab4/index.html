@@ -3,26 +3,124 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Lab 4 - JinGang_LI</title>
+    <title>Lab 4 - Accordion - JinGang-LI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link id="stylesheet" rel="stylesheet" href="./themes/le-frog/jquery-ui.css">
+
+    <script src="./external/jquery/jquery.js"></script>
+    <script src="./jquery-ui.js"></script>
+    <script src="./jquery.corner.js"></script>
+    <script src="./jquery.jeditable.js"></script>
+
+    <style>
+        div.demo,
+        div.inner {
+            color: #000;
+            text-align: center;
+            font-family: verdana, arial, sans-serif;
+        }
+
+        div.demo {
+            float: left;
+            width: 18em;
+            padding: 20px;
+            margin: 1em;
+            background: #6af;
+        }
+    </style>
+
+    <script>
+        $(function() {
+            $('div.demo, div.inner').each(function() {
+                var t = $('p', this).text();
+                eval(t);
+            });
+        });
+    </script>
 </head>
 
 <body>
-    <ul>
-        <li> <a href="./accordion.html">Accordion example</a> </li>
-        <li> <a href="./date-picker.html">Date-picker example</a> </li>
-        <li>
-            <a href=""></a>
-        </li>
-        <li>
-            <a href=""></a>
-        </li>
-        <li>
-            <a href=""></a>
-        </li>
-        <li>
-            <a href=""></a>
-        </li>
-    </ul>
+    <div id="accordion">
+        <h3>Section :accordion 1</h3>
+        <div>
+            <p> <img src="./images/dog.jpg" style="width:100px"> </p>
+            <p> Mauris mauris ante, blandit et, ultrices a, suscipit eget, quam. Integer ut neque. Vivamus nisi metus, molestie vel, gravida in, condimentum sit amet, nunc. Nam a nibh. Donec suscipit eros. Nam mi. Proin viverra leo ut odio. Curabitur malesuada. Vestibulum a velit eu ante scelerisque vulputate. </p>
+        </div>
+        <h3>Section :accordion 2</h3>
+        <div>
+            <p> <img src="./images/cat.jpg" style="width: 100px"> </p>
+            <p> Sed non urna. Donec et ante. Phasellus eu ligula. Vestibulum sit amet purus. Vivamus hendrerit, dolor at aliquet laoreet, mauris turpis porttitor velit, faucibus interdum tellus libero ac justo. Vivamus non quam. In suscipit faucibus urna. </p>
+        </div>
+        <h3>Section :Date-Picker</h3>
+        <div>
+            <p>Date:
+                <input type="text" id="datepicker"> </p>
+        </div>
+        <h3>Section :Theme switch</h3>
+        <div>
+            <select id="themes">
+              <option value="./themes/le-frog/jquery-ui.css">Le Frog</option>
+              <option value="./themes/eggplant/jquery-ui.css">eggplant</option>
+              <option value="./themes/sunny/jquery-ui.css">sunny</option>
+            </select>
+        </div>
+        <h3>Section :jQuery Corner</h3>
+        <div>
+            <div class="demo">
+                <h1>Round</h1>
+                <p>$(this).corner();</p>
+            </div>
+            <div class="demo">
+                <h1>Bevel</h1>
+                <p>$(this).corner("bevel");</p>
+            </div>
+            <div class="demo">
+                <h1>Notch</h1>
+                <p>$(this).corner("notch");</p>
+            </div>
+
+        </div>
+        <h3>Section :Tool tip</h3>
+        <div>
+            <p id="tooltip">
+                <a href="#" title="That&apos;s what this widget is">Tooltips</a> can be attached to any element. When you hover the element with your mouse, the title attribute is displayed in a little box next to the element, just like a native tooltip.
+            </p>
+            <P>
+                <a href="#" title="Anchor description on the hyper-link">Some hyper-link</a>
+                <input title="Input help message for the text box" placeholder="hover mouse on me">
+            </P>
+        </div>
+        <h3>Section :jquery editable</h3>
+        <div>
+            <p class="editable-text">Click this text to edit it.</p>
+        </div>
+
+    </div>
+
+    <script>
+        $(function() {
+            $("#accordion").accordion({
+                collapsible: true
+            });
+            $("#datepicker").datepicker({
+                showButtonPanel: true,
+                showOn: "button",
+                buttonImage: "./images/package-lock.gif",
+                buttonImageOnly: true,
+                buttonText: "Select date"
+            });
+        });
+
+        $('#themes').change(function() {
+            $("#stylesheet").attr({
+                href: $('#themes').find(":selected").val()
+            });
+        });
+
+        $("#tooltip").tooltip();
+
+        $(".editable-text").editable("save.php");
+    </script>
 </body>
 
 </html>
